@@ -1,0 +1,156 @@
+\documentclass[12pt, oneside, a4paper]{ctexart}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{ctex}
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage[{top=2.54cm, bottom=2.54cm, left=3.18cm, right=3.18cm}]{geometry}
+\usepackage{graphicx}
+\usepackage[breaklinks, colorlinks=false, hidelinks]{hyperref}
+\usepackage{mathptmx}
+\usepackage[table]{xcolor}
+\usepackage{xeCJK}
+
+\ctexset{
+    section={   
+        name={,.},
+        number={\chinese{section}},
+        format=\heiti\raggedright\zihao{3}\bfseries,
+        aftername={\hspace{0.5em}},
+        beforeskip=1ex,
+        afterskip=1ex,
+    },
+    subsection={
+        name={,.},
+        number={\arabic{subsection}},
+        format=\songti\raggedright\zihao{-4}\bfseries,
+        aftername={\hspace{0.5em}},
+        beforeskip=0ex,
+        afterskip=0ex,
+    },
+}
+\pagestyle{plain}
+\renewcommand{\figurename}{\small{图}}
+\setmainfont{Times New Roman}
+\setCJKmainfont[AutoFakeBold={2}]{SimSun}
+\setCJKfamilyfont{zh}{SimSun}
+\setCJKfamilyfont{ja}{BIZ UDMincho}
+\xeCJKDeclareCharClass{CJK}{
+  "24EA,
+  "2460->"2473,
+  "3251->"32BF,
+  "24FF,
+  "2776->"277F,
+  "24EB->"24F4
+}
+
+
+
+%----------分割线----------%
+
+
+
+\begin{document}
+
+
+
+\thispagestyle{empty}
+\begin{center}{
+    \fontsize{26pt}{26pt}\selectfont
+    \vspace*{2.5\baselineskip}
+    \includegraphics[width=0.6\textwidth]{pics/tongji-university-logo-1024px.png}\\
+    [\baselineskip]
+    \heiti{同济大学交通学院实验报告}\\
+    \fontsize{18pt}{24pt}\selectfont
+    \vspace*{0.5\baselineskip}
+    \songti{\begin{tabular}{l}
+            {\heiti{}课程名称：}智能轨道交通                     \\
+            {\heiti{}实验人员：}蒙卫焓~~2352250~~肖哲夫~~2352670 \\
+            \hspace{5em}（每人贡献率均为50\%）                 \\
+            {\heiti{}课程类型：}选修                         \\
+            {\heiti{}实验题目：}基于 RFDD 数据集的铁路扣件缺陷检测       \\
+            \hspace{5em}与算法对比
+        \end{tabular}}
+    }
+\end{center}
+\newpage{}
+\setcounter{page}{1}
+\section{实验背景与目的}
+\par{}
+铁路扣件是连接钢轨与轨枕的重要部件。扣件缺失、断裂、反装、位移、变形等问题会影响线路安全。本作业使用 RFDD（Railway Fastener Defect Dataset）数据集，训练目标检测模型识别铁路扣件状态，并比较 YOLO 与其他目标检测算法在精度、速度和工程适用性上的差异。
+\par{}
+本次实验的目的如下：
+\begin{enumerate}[\bf(1)]
+    \vspace{-2.4mm}
+    \item 面向现实工程问题，要求学生完成从数据读取、标注解析、可视化验证到模型训练、测试评估、对比分析的一系列任务，掌握目标检测的全流程操作；
+          \vspace{-3.5mm}
+    \item 促进学生理解YOLO模型的基本算法原理，并能对超参数进行合理调整、对模型性能进行多指标评价；
+          \vspace{-3.5mm}
+    \item 培养学生使用不同模型解决同一个工程问题，并分析各模型从原理到性能的差异的能力；
+          \vspace{-3.5mm}
+    \item 培养学生在实际工程情境下，理解和应对样本缺陷的能力。
+          \vspace{-3.5mm}
+\end{enumerate}
+\par{}
+\quad{}
+\par{}
+\section{数据集介绍}
+\par{}
+本目录中的 RFDD 数据集包含铁路扣件图像和目标检测标注：
+\begin{enumerate}[\bf(1)]
+    \vspace{-2.4mm}
+    \item \textbf{训练与验证集：train\&val/}
+          \vspace{-1.5mm}
+          \par{}
+          \hspace{1.65em}
+          图像文件：train\&val/images/RFDD\_Train\&val\_Images\_dedup.h5
+          \vspace{-1.5mm}
+          \par{}
+          \hspace{1.65em}
+          标注文件：train\&val/labels/RFDD\_Train\&val\_Labels.h5
+          \vspace{-1.5mm}
+          \vspace{-2mm}
+    \item \textbf{测试集：test/}
+          \vspace{-1.5mm}
+          \par{}
+          \hspace{1.65em}
+          图像目录：test/images/
+          \vspace{-1.5mm}
+          \par{}
+          \hspace{1.65em}
+          标注目录：test/labels/
+          \vspace{-3.5mm}
+\end{enumerate}
+\par{}
+其中，测试集标注采用 YOLO 格式：class x\_center y\_center width height，类别编号如表1：
+\begin{table}[H]
+    \vspace{-0.5cm}
+    \centering
+    \caption{RFDD 数据集类别定义}
+    \vspace{0.2cm}
+    \small\begin{tabular}{ccc}
+        \specialrule{\heavyrulewidth}{0pt}{0pt}
+        \setlength{\extrarowheight}{6pt}
+        \cellcolor{gray!20}类别 ID & \cellcolor{gray!20}英文类别 & \cellcolor{gray!20}中文含义 \\
+        \specialrule{\lightrulewidth}{0pt}{0pt}
+        0                        & Deformed                & 变形                      \\
+        1                        & Fractured               & 断裂                      \\
+        2                        & Missing                 & 缺失                      \\
+        3                        & Inverted                & 反装                      \\
+        4                        & Normal                  & 正常                      \\
+        5                        & Displaced               & 位移                      \\
+        \specialrule{\heavyrulewidth}{0pt}{0pt}
+    \end{tabular}
+    \vspace{-0.2cm}
+\end{table}
+\par{}
+注意：Canvas系统中提供的类别疑似有误，已根据实际做好修正；数据存在明显类别不平衡，Normal 类样本远多于缺陷类样本。
+\par{}
+\quad{}
+\par{}
+
+
+
+
+\end{document}

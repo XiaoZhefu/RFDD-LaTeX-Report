@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
+\usepackage{caption}
 \usepackage{ctex}
 \usepackage{enumerate}
 \usepackage{float}
@@ -9,9 +10,9 @@
 \usepackage{graphicx}
 \usepackage[breaklinks, colorlinks=false, hidelinks]{hyperref}
 \usepackage{mathptmx}
+\usepackage{tocloft}
 \usepackage[table]{xcolor}
 \usepackage{xeCJK}
-
 \ctexset{
     section={   
         name={,.},
@@ -23,18 +24,30 @@
     },
     subsection={
         name={,.},
-        number={\arabic{subsection}},
+        number={\arabic{section}.\arabic{subsection}},
+        format=\songti\raggedright\zihao{4}\bfseries,
+        aftername={\hspace{0.5em}},
+        beforeskip=0ex,
+        afterskip=0ex,
+    },
+    subsubsection={
+        name={,.},
+        number={\arabic{section}.\arabic{subsection}.\arabic{subsubsection}},
         format=\songti\raggedright\zihao{-4}\bfseries,
         aftername={\hspace{0.5em}},
         beforeskip=0ex,
         afterskip=0ex,
     },
 }
+\setlength{\cftbeforesecskip}{1ex plus 0.1ex}
+\setlength{\cftbeforesubsecskip}{0ex plus 0.05ex}
+\setlength{\cftbeforesubsubsecskip}{0ex plus 0.05ex}
 \pagestyle{plain}
 \renewcommand{\figurename}{\small{图}}
 \setmainfont{Times New Roman}
 \setCJKmainfont[AutoFakeBold={2}]{SimSun}
 \setCJKfamilyfont{zh}{SimSun}
+\setCJKfamilyfont{zhsong}[AutoFakeBold={2.5}]{SimSun}
 \setCJKfamilyfont{ja}{BIZ UDMincho}
 \xeCJKDeclareCharClass{CJK}{
   "24EA,
@@ -100,35 +113,36 @@
 本目录中的 RFDD 数据集包含铁路扣件图像和目标检测标注：
 \begin{enumerate}[\bf(1)]
     \vspace{-2.4mm}
-    \item \textbf{训练与验证集：train\&val/}
+    \item \textbf{训练与验证集：}{\fontspec{JetBrains Mono}train\&val/}
           \vspace{-1.5mm}
           \par{}
           \hspace{1.65em}
-          图像文件：train\&val/images/RFDD\_Train\&val\_Images\_dedup.h5
+          图像文件：{\fontspec{JetBrains Mono}/images/RFDD\_Train\&val\_Images\_dedup.h5}
           \vspace{-1.5mm}
           \par{}
           \hspace{1.65em}
-          标注文件：train\&val/labels/RFDD\_Train\&val\_Labels.h5
+          标注文件：{\fontspec{JetBrains Mono}/labels/RFDD\_Train\&val\_Labels.h5}
           \vspace{-1.5mm}
           \vspace{-2mm}
-    \item \textbf{测试集：test/}
+    \item \textbf{测试集：}{\fontspec{JetBrains Mono}test/}
+          \vspace{-1.5mm}
           \vspace{-1.5mm}
           \par{}
           \hspace{1.65em}
-          图像目录：test/images/
+          图像目录：{\fontspec{JetBrains Mono}/images/}
           \vspace{-1.5mm}
           \par{}
           \hspace{1.65em}
-          标注目录：test/labels/
+          标注目录：{\fontspec{JetBrains Mono}/labels/}
           \vspace{-3.5mm}
 \end{enumerate}
 \par{}
-其中，测试集标注采用 YOLO 格式：class x\_center y\_center width height，类别编号如表1：
+其中，测试集标注采用 YOLO 格式：{\fontspec{JetBrains Mono}class x\_center y\_center width height}，类别编号如表\ref{tab:01}：
 \begin{table}[H]
     \vspace{-0.5cm}
     \centering
-    \caption{RFDD 数据集类别定义}
-    \vspace{0.2cm}
+    \caption{RFDD 数据集类别定义}\label{tab:01}
+    \vspace{-0.2cm}
     \small\begin{tabular}{ccc}
         \specialrule{\heavyrulewidth}{0pt}{0pt}
         \setlength{\extrarowheight}{6pt}
@@ -149,7 +163,174 @@
 \par{}
 \quad{}
 \par{}
+\section{实验环境配置}
+\par{}
+实验主要环境配置如表\ref{tab:02}与表\ref{tab:03}，其他库均为内置或非核心功能库，此处省略。
+\begin{table}[H]
+    \vspace{-0.5cm}
+    \centering
+    \caption{实验硬件环境}\label{tab:02}
+    \vspace{-0.2cm}
+    \small\renewcommand{\arraystretch}{1.3}\begin{tabular}{cc}
+        \specialrule{\heavyrulewidth}{0pt}{0pt}
+        \cellcolor{gray!20}硬件 & \cellcolor{gray!20}型号                 \\
+        \specialrule{\lightrulewidth}{0pt}{0pt}
+        CPU                   & 13th Gen Intel(R) Core(TM) i9-13900HX \\
+        GPU                   & NVIDIA GeForce RTX 4060 Laptop GPU    \\
+        RAM                   & 16GB                                  \\
+        \specialrule{\heavyrulewidth}{0pt}{0pt}
+    \end{tabular}
+    \vspace{-0.2cm}
+\end{table}
+\begin{table}[H]
+    \vspace{-0.5cm}
+    \centering
+    \caption{实验软件环境}\label{tab:03}
+    \vspace{-0.2cm}
+    \small\renewcommand{\arraystretch}{1.3}\begin{tabular}{ccc}
+        \specialrule{\heavyrulewidth}{0pt}{0pt}
+        \cellcolor{gray!20}软件/库名 & \cellcolor{gray!20}版本 & \cellcolor{gray!20}备注          \\
+        \specialrule{\lightrulewidth}{0pt}{0pt}
+        Python                   & 3.10.20               & Conda 环境下                      \\
+        torch                    & 2.7.0+cu128           & CUDA 12.8，深度学习框架               \\
+        torchvision              & 0.22.0+cu128          & CUDA 12.8，模型库（FRCNN/RetinaNet） \\
+        ultralytics              & 8.4.54                & YOLO 训练/推理                     \\
+        numpy                    & 2.2.6                 & 数值计算                           \\
+        matplotlib               & 3.10.9                & 画图（仿 MATLAB）                   \\
+        pillow (PIL)             & 12.1.1                & 图像读写                           \\
+        opencv-python            & 4.13.0                & 图像处理（ultralytics 依赖）           \\
+        h5py                     & 3.16.0                & 读取 HDF5 数据集                    \\
+        yaml                     & 6.0.3                 & 读写 YAML 配置文件                   \\
+        \specialrule{\heavyrulewidth}{0pt}{0pt}
+    \end{tabular}
+    \vspace{-0.2cm}
+\end{table}
+\par{}
+\quad{}
+\par{}
+\section{算法原理及其代码实现}
+\subsection{YOLOv8s/YOLOv8m代码原理}
+\par{}
+YOLOv8模型结构如图\ref{fig:01}\textsuperscript{\color{red}\cite{ref1}}，其与本次实验中采用的模型结构基本相同。
+\subsubsection{Backbone部分}
+\par{}
+一般使用CSPDarknet进行主干特征提取，输入图像一般为$640 \times 640 \times 3$，即物理面积$640 \times 640$像素，通道为RGB，经过多次卷积、下采样，提取更高层/抽象图像特征。
+\par{}
+图中步骤0、1、3、5、7的ConvModule为卷积模块，每卷积一次，张量的物理二维面积减小、通道数增加，即左上角特征金字塔的P1\textasciitilde P5，最终输出$20 \times 20 \times 512 \times w \times r$张量。
+\begin{figure}[H]
+    \vspace{-0.2cm}
+    \includegraphics[width=\linewidth]{pics/YOLOv8.png}
+    \vspace{-1cm}
+    \caption{YOLOv8算法结构示意图}\label{fig:01}
+    \vspace{-0.5cm}
+\end{figure}
+\par{}
+而CSPLayer\_2Conv为特征提取模块，将输入特征分割成两份，一路进行$n$次Bottleneck特征提取，另一路保留原始信息，最后再拼接。其中，由于首尾均经过卷积层处理，因此该模块名字中有2Conv的后缀；DarknetBottleneck就是重复的特征提取单元，$n$表示该单元重复次数，图中步骤2、4、6、8中给出了$n=3d$或$6d$，而$d$指的是deepen factor，根据模型类别而有所区分，见图中表格，$d$越大，网络越深，特征提取能力越强，但计算量也越大。如表可知本次实验所用的YOLOv8s和YOLOv8m在相同步骤中的$n$就是两倍关系，v8m的$n$是v8s的两倍。该模块一是只让一半特征参与深层变换，减小了计算量；二是一路提取更复杂的语义特征，另一路保留浅层信息，增强了特征信息的丰富性。
+\par{}
+步骤9中的SPPF模块全称为Spatial Pyramid Pooling Fast模块，即快速空间金字塔池化。如图可得首先卷积了一次，调整了通道数，降低后续计算量，接着连续经过三次MaxPool2d进行池化，扩张感受野，再将原始特征与三次池化后的特征全部拼接，最后再进行一次卷积以压缩通道，得到最终输出。
+\subsubsection{Neck部分}
+\par{}
+采用YOLOv8PAFPN结构，将Backbone提取到的不同层级特征（这里是金字塔中的P3\textasciitilde P5）进行融合。其中包含两条路径：高层语义经过上采样后自顶向下拼接底层特征（左半边）、融合后的特征再进行自底向上的下采样（右半边，这里下采样用了卷积）。这样做使得模型既能利用低层的边缘、纹理信息，又能利用高层的语义信息，因此对大、中、小目标都有较好的检测能力。
+\par{}
+Upsample就是上采样，直接将深层/高层的小尺寸、高语义特征图的物理尺寸放大（类似在PS里直接变换图像尺寸）并进行插值，再与细节更多的浅层特征图融合。
+\par{}
+Neck部分所采用的其他模块基本前文已经解释过，这里不再赘述。
+\subsubsection{Head部分}
+\par{}
+采用YOLOv8HeadModule，其中的Decoupled Head，即解耦检测头，分BBox和Cls两条分支，分别用于预测目标框位置和预测目标类别。图中Neck部分的P3\textasciitilde P5每个都会接入一个检测头，负责不同大小目标的检测。
+\subsubsection{Loss部分}
+\par{}
+即损失函数，BBox Loss指边界框回归损失，使用 CIoU + DFL；Cls Lossz指分类损失，使用 BCE。
+\par{}
+其中CIoU用于衡量预测框和真实框的位置、重叠度、中心距离和长宽比；DFL用于精细化边界位置预测；BCE用于衡量模型预测的类别概率和真实类别标签之间的差距。
+\vspace{0.25cm}
+\subsection{Faster R-CNN ResNet-50 FPN v2代码原理}
+\par{}
+由于Torch的官方文档没有给出完整的算法结构示意图，因此直接使用文字进行简要描述，必要时插入图片进行说明。
+\par{}
+Faster R-CNN是一种两阶段目标检测算法，先找出可能存在目标的区域，再对区域进行分类与边界框确定；而YOLO是一阶段算法，可以一次性直接输出检测结果。
+\par{}
+本次实验采用的Faster R-CNN ResNet-50 FPN v2算法使用 Faster R-CNN 两阶段检测框架，以 ResNet-50 作为主干特征提取网络，结合 FPN 特征金字塔进行多尺度检测，通过RPN自动生成候选区域并对每个区域进行分类与位置修正。
+\subsubsection{Backbone部分}
+\par{}
+使用ResNet-50 + FPN，即50层的残差网络配合特征金字塔。其中FPN类似于YOLOv8图中左上角的金字塔，不多赘述。
+\par{}
+而ResNet-50的原理来源于何恺明等人在 2015 年提出的 Deep Residual Learning for Image Recognition\textsuperscript{\color{red}\cite{ref2}}，其中指出，ResNet-50通过学习输入$x$与输出$H(x)$之间的差值$F(x) = H(x) - x$，最终直接得输出$H(x) = F(x) + x$，结构类似于图\ref{fig:02}（最右侧，该图是ResNet-34的）。
+\par{}
+首先针对输入图像进行$7 \times 7$卷积，接着进行池化。池化后的步骤类似于YOLOv8的Backbone，ResNet-50同样使用Bottleneck提取特征，但层数结构与YOLO中的不同。文献{\color{red}\cite{ref2}}中给出的层数结构如表\ref{tab:04}：
+\par\noindent{}
+\begin{minipage}[t]{0.48\linewidth}
+    \vspace{-0.2cm}
+    \centering
+    \includegraphics[height=\linewidth, angle=-90]{pics/resnet_architecture.png}
+    \vspace{-0.4cm}
+    \captionof{figure}{ResNet 结构示意图}\label{fig:02}
+    \vspace{0.2cm}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\linewidth}
+    \begin{table}[H]
+        \centering
+        \vspace{-0.2cm}
+        \caption{ResNet-50 Bottleneck 层数结构}\label{tab:04}
+        \small\begin{tabular}{cc}
+            \specialrule{\heavyrulewidth}{0pt}{0pt}
+            \rowcolor{gray!20}
+            层名       & 尺寸与层数                   \\
+            \specialrule{\lightrulewidth}{0pt}{0pt}
+            conv2\_x & $\begin{bmatrix}
+                                1\times 1, 64 \\
+                                3\times 3, 64 \\
+                                1\times 1, 256
+                            \end{bmatrix}\times 3$ \\
+            conv3\_x & $\begin{bmatrix}
+                                1\times 1, 128 \\
+                                3\times 3, 128 \\
+                                1\times 1, 512
+                            \end{bmatrix}\times 4$ \\
+            conv4\_x & $\begin{bmatrix}
+                                1\times 1, 256 \\
+                                3\times 3, 256 \\
+                                1\times 1, 1024
+                            \end{bmatrix}\times 6$ \\
+            conv5\_x & $\begin{bmatrix}
+                                1\times 1, 512 \\
+                                3\times 3, 512 \\
+                                1\times 1, 2048
+                            \end{bmatrix}\times 3$ \\
+            \specialrule{\heavyrulewidth}{0pt}{0pt}
+        \end{tabular}
+    \end{table}
+    \par{}
+    可见其层数明显多于YOLOv8s的1或2层以及YOLOv8m的2或4层，故推测该算法会因此而比YOLOv8耗时；最后再经过全局平均池化，然后进行全连接层分类，并将多尺度特征图送入FPN以便于检测大中小目标。
+\end{minipage}
+\par{}
+\subsubsection{RPN部分}
+\par{}
+即Region Proposal Network，区域候选网络，目的是在特征图上找出可能存在目标的位置，是两阶段中的第一阶段。
+\par{}
+其会在同一个位置放多个不同尺度、长宽比的Anchor，即预设候选框/锚点，接着输出是否包含目标和锚点偏移量两个结果，调整锚点使其更接近目标。经过筛选后即可得候选区域。
+\subsubsection{Head部分}
+\par{}
+首先使用RoI Pooling/Align，即感兴趣区域池化/对齐，取出候选框对应区域并转化为固定尺寸的小特征图。最后再使用检测头进行目标框位置与类别预测，功能类似YOLOv8的Head，只不过YOLOv8不需要候选框。这是两阶段中的第二阶段。
 
+
+
+\begin{flushleft}
+    \begin{small}
+        \begin{thebibliography}{99}
+            \bibitem{ref1} OpenMMLab. MMYOLO-YOLOv8 [EB/OL]. 2023[2026-06-02]. \\
+            \href{https://github.com/open-mmlab/mmyolo/blob/dev/configs/yolov8/README.md}{\color{blue} https://github.com/open-mmlab/mmyolo/blob/dev/configs/yolov8/README.md}.
+            \vspace{-3mm}
+            \bibitem{ref2}
+            HE K, ZHANG X, REN S, et al. Deep residual learning for image recognition [C]
+            \textit{Proceedings of 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}.
+            Las Vegas, NV, USA: IEEE, 2016: 770-778.
+            DOI: \href{https://doi.org/10.1109/CVPR.2016.90}{\color{blue} 10.1109/CVPR.2016.90}.
+            \vspace{-3mm}
+        \end{thebibliography}
+    \end{small}
+\end{flushleft}
 
 
 
